@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*
+            输出this is li
+            ...等待5秒
+            this is li
+        */
+        function Person(){
+            if(!Person.prototype.isPrototypeOf(this)){
+                return new Person()
+            }
+            this.tasks=[]
+            setTimeout(()=>{
+                this.jihe()
+            },0)
+        }
+        Person.prototype={
+            fn:async function(){
+                console.log(this)
+            }
+        }
+        Person.prototype.jihe=async function(){
+            for(var i=0; i<this.tasks.length;i++){
+                await this.tasks[i].fn( this.tasks[i].dom)
+            }
+        }
+        Person.prototype.init= function(dom){
+            let fn=function(dom){
+                console.log('This list '+dom)
+            }
+            this.tasks.push({fn,dom})
+            return this
+        }
+        Person.prototype.sleep= function(dom){
+            let fn=function(dom){
+                console.log('...等待5 秒'+dom)
+                return new Promise((res,ejc)=>{
+                    setTimeout(()=>{
+                        res()
+                    },dom)
+                })
+            }
+            this.tasks.push({fn,dom})
+            return this
+        }
+
+        Person().sleep(1000).init('lis')
+    </script>
+</body>
+</html>
